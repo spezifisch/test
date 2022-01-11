@@ -1,0 +1,11 @@
+services:
+  testcot:
+    image: ghcr.io/spezifisch/docker-test-dovecot:latest
+  test:
+    depends_on:
+      - testcot
+    build:
+      context: mettmail
+    volumes:
+      - ./mettmail/mettmail.example.yaml:/config/mettmail.yaml:ro
+    command: [ "--trace", "--config", "/config/mettmail.yaml" ]
