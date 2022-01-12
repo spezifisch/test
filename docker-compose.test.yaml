@@ -1,11 +1,41 @@
 services:
   testcot:
     image: ghcr.io/spezifisch/docker-test-dovecot:latest
-  test:
+    volumes:
+      - test-home:/home
+
+  # fetch from a -> deliver to rxa
+  mettmail_a:
     depends_on:
       - testcot
     build:
       context: mettmail
+    image: mettmail
     volumes:
-      - ./mettmail/mettmail.example.yaml:/config/mettmail.yaml:ro
+      - ./mettmail-a.yaml:/config/mettmail.yaml:ro
     command: [ "--trace", "--config", "/config/mettmail.yaml" ]
+    restart: always
+
+  # fetch from rxb -> deliver to rxc
+  mettmail_rxb:
+    depends_on:
+      - testcot
+    image: mettmail
+    volumes:
+      - ./mettmail-rxb.yaml:/config/mettmail.yaml:ro
+    command: [ "--trace", "--config", "/config/mettmail.yaml" ]
+    restart: always
+
+  # test runner
+  test:
+    depends_on:
+      - testcot
+      - mettmail_a
+      - mettmail_rxb
+    build:
+      context: tester
+    volumes:
+      - test-home:/test-home
+
+volumes:
+  test-home: null

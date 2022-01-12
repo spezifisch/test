@@ -14,5 +14,8 @@ jobs:
                   path: mettmail
                   repository: spezifisch/mettmail
 
+            - name: Start test dovecot and mettmails
+              run: docker-compose -f ./docker-compose.test.yaml up -d testcot mettmail_a mettmail_rxb
+
             - name: Test
-              run: docker-compose -f ./docker-compose.test.yaml up --build --exit-code-from test
+              run: docker-compose -f ./docker-compose.test.yaml up test --build --exit-code-from test
