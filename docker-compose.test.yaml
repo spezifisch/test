@@ -35,10 +35,10 @@ services:
     image: bats/bats:1.5.0
     volumes:
       # bats test scripts
-      - ./tests/bats:/tests:ro
+      - ./tests/bats:/code/tests:ro
       # test users home dirs
       - testcot-home:/home
-    command: "/tests"
+    command: "/code/tests"
 
 volumes:
   testcot-home: null
