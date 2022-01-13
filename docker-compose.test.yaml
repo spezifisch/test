@@ -2,7 +2,7 @@ services:
   testcot:
     image: ghcr.io/spezifisch/docker-test-dovecot:latest
     volumes:
-      - test-home:/home
+      - testcot-home:/home
 
   # fetch from a -> deliver to rxa
   mettmail_a:
@@ -32,10 +32,13 @@ services:
       - testcot
       - mettmail_a
       - mettmail_rxb
-    build:
-      context: tester
+    image: bats/bats:1.5.0
     volumes:
-      - test-home:/test-home
+      # bats test scripts
+      - ./tests/bats:/tests:ro
+      # test users home dirs
+      - testcot-home:/home
+    command: "/tests"
 
 volumes:
-  test-home: null
+  testcot-home: null
